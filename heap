@@ -1,0 +1,106 @@
+import java.util.*;
+public class MyProgram
+{
+    private static int size = 0;
+    static void organizeHeap(int arr[], int start, int size, int x){
+        int max = start;
+        for (int i = 0; i < Math.pow(2,x); i++){
+            int child = (int)(Math.pow(2,x)*start + i);
+            if (child < size && arr[child] > arr[max]){
+                max = child;
+            }
+        }
+        if (max != start){
+            int temp = arr[max];
+            arr[max] = arr[start];
+            arr[start] = temp;
+            organizeHeap(arr, max, size, x);
+        }
+    }
+    static void createHeap(int arr[], int size, int x){
+        int start = (size - 1) / (int)Math.pow(2,x);
+        for (int i = start; i>=0; i--){
+            organizeHeap(arr, i, size, x);
+        }
+    }
+    static void printHeap(int arr[], int capacity){
+        for (int i = 0; i < capacity; i++){
+            if (arr[i] == 0){
+                break;
+            }
+            System.out.print(arr[i] + " ");
+        }
+    } 
+    static void insert(int arr[], int size, int x, int y){
+        arr[size] = y;
+        size++;
+        createHeap(arr, size, x);
+    }
+    static int popMax(int arr[], int size, int x){
+        createHeap(arr, size, x);
+        int max = arr[0];
+        arr[0] = arr[size];
+        arr[size] = 0;
+        size--;
+        createHeap(arr, size, x);
+        return max;
+    }
+    public static void main(String args[]){
+        //int capacity = 1000;
+        //int size = 0;
+        //int[] arr = new int[capacity];
+        //int tests[] = {6, 7, 5, 3, 8, 4, 2, 4, 2, 8, 2, 3, 7, 9, 6, 5, 1, 7, 9, 3, 7};
+        //for (int i = 0; i < tests.length && i < capacity; i++){
+        //    arr[i] = tests[i];
+        //    size = i+1;
+        //}
+        //int x = 1;
+        //createHeap(arr, size, x);
+        //printHeap(arr, capacity);
+        //System.out.println("\n");
+        //insert(arr, size, x, 10);
+        //printHeap(arr, capacity);
+        //System.out.println("\n");
+        //System.out.println(popMax(arr, size, x));
+        //printHeap(arr, capacity);
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Maximum heap capacity?");
+        int capacity = scan.nextInt();
+        size = 0;
+        int[] arr = new int[capacity];
+        System.out.println("Please provide integers to be made into a heap. Provide 0 to stop.");
+        for(int i = 0; i < capacity; i++){
+            System.out.println("Provide next integer");
+            int nextInt = scan.nextInt();
+            if (nextInt == 0){
+                break;
+            }
+            arr[i] = nextInt;
+            size = i+1;
+        }
+        System.out.println("Each node of the heap will have a certain amount of branches. Please provide an integer that is a power of 2 for how many branches you want each node to have.");
+        int x = (int)(Math.log(scan.nextInt()) / Math.log(2));
+        System.out.println("Resulting heap");
+        createHeap(arr, size, x);
+        printHeap(arr, capacity);
+        System.out.println("\n");
+        System.out.println("Insert integers to be added to the heap. Provide 0 to stop.");
+        for(int i = 0; i < (capacity - size); i++){
+            System.out.println("Provide next integer");
+            int nextInt = scan.nextInt();
+            if (nextInt == 0){
+                break;
+            }
+            insert(arr, size, x, nextInt);
+            size++;
+            printHeap(arr, capacity);
+            System.out.println("Resulting heap");
+            System.out.println("\n");
+        }
+        System.out.println("Current maximum element of heap:");
+        System.out.println(popMax(arr, size, x));
+        System.out.println("Resulting heap with max removed");
+        printHeap(arr, capacity);
+        System.out.println("\n");
+}
+}
